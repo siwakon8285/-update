@@ -1,5 +1,5 @@
 [package]
-name = "LeagueOfLegends"
+name = "league_of_legends"
 version = "0.1.0"
 edition = "2024"
 

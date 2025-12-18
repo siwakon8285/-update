@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use LeagueOfLegends::{
+use league_of_legends::{
     config::config_loader,
     infrastructure::{database::postgresql_connection, http::http_serv::start},
 };

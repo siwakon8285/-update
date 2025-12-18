@@ -19,7 +19,7 @@ where
 {
     crew_operation_repository: Arc<T1>,
     mission_viewing_repository: Arc<T2>,
-    tx: Arc<T3>,
+    _tx: Arc<T3>,
 }
 
 impl<T1, T2, T3> CrewOperationUseCase<T1, T2, T3>
@@ -36,7 +36,7 @@ where
         Self {
             crew_operation_repository,
             mission_viewing_repository,
-            tx,
+            _tx: tx,
         }
     }
 

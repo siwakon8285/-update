@@ -4,9 +4,8 @@ use diesel::prelude::*;
 use std::sync::Arc;
 
 use crate::domain::{
-    entities::{crew_memberships::CrewMemberShips, missions::MissionEntity},
-    repositories::mission_viewing::MissionViewingRepository,
-    value_objects::{mission_filter::MissionFilter, mission_model::MissionModel},
+    entities::missions::MissionEntity, repositories::mission_viewing::MissionViewingRepository,
+    value_objects::mission_filter::MissionFilter,
 };
 use crate::infrastructure::database::{
     postgresql_connection::PgPoolSquad,
