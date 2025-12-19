@@ -39,7 +39,20 @@ where
             format!("Join Mission_id:{} completed", mission_id),
         )
             .into_response(),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+        Err(e) => {
+            // เช็คว่า Error มีคำว่า "duplicate key" หรือไม่
+            let error_msg = e.to_string();
+            if error_msg.contains("duplicate key") || error_msg.contains("UniqueViolation") {
+                return (
+                    StatusCode::CONFLICT, // ตอบกลับ 409
+                    "You have already joined this mission",
+                )
+                    .into_response();
+            }
+
+            // ถ้าเป็น Error อื่นๆ ก็ตอบ 500 ตามปกติ
+            (StatusCode::INTERNAL_SERVER_ERROR, error_msg).into_response()
+        }
     }
 }
 
