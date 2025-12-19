@@ -1,7 +1,12 @@
 use std::sync::Arc;
 
 use axum::{
-    Extension, Json, Router, extract::{Path, State}, http::StatusCode, middleware, response::IntoResponse, routing::{delete, patch, post}
+    Extension, Json, Router,
+    extract::{Path, State},
+    http::StatusCode,
+    middleware,
+    response::IntoResponse,
+    routing::{delete, patch, post},
 };
 
 use crate::{
@@ -23,7 +28,7 @@ use crate::{
                 mission_viewing::MissionViewingPostgres,
             },
         },
-        http::routers::brawlers::register,
+        http::{middleware::auth::authorization, routers::brawlers::register},
     },
 };
 
@@ -85,6 +90,6 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
         .route("/", post(add))
         .route("/:mission_id", patch(edit))
         .route("/:mission_id", delete(remove))
-        .route_layer(middleware::from_fn())
+        .route_layer(middleware::from_fn(authorization))
         .with_state(Arc::new(use_case))
 }
