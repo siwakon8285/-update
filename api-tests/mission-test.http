@@ -1,0 +1,47 @@
+@username = menta
+@password = P@ssw0rd
+
+### login
+# @name login
+POST {{base_url}}/authentication/login
+Content-Type: application/json
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}"
+}
+
+### extract token
+# @access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzY2MjAxMzA0LCJpYXQiOjE3NjYxMTQ5MDR9.OiwK47AUltnocBh99KnliORvIjMtk4F92HX11RbAgI8"
+
+
+### create new mission
+# @prompt mission_name Mission Name
+# @prompt description Mission Description
+POST {{base_url}}/mission-management
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+    "name": "{{mission_name}}",
+    "description": "{{description}}"
+}
+
+### update mission
+# @prompt mission_id Mission ID
+# @prompt mission_name Mission Name
+# @prompt description Mission Description
+PATCH {{base_url}}/mission-management/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+    "name": "{{mission_name}}",
+    "description": "{{description}}"
+}
+
+### remove mission
+# @prompt mission_id Mission ID
+DELETE {{base_url}}/mission-management/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}

@@ -1,0 +1,29 @@
+@username = menta
+@password = P@ssw0rd
+
+### login
+# @name login
+POST {{base_url}}/authentication/login
+Content-Type: application/json
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}"
+}
+
+### extract token
+@access_token = {{login.response.body.access_token}}
+
+
+### join mission
+# @prompt mission_id Mission ID to Join
+POST {{base_url}}/crew-operation/join/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+
+### leave mission
+# @prompt mission_id Mission ID to Leave
+DELETE {{base_url}}/crew-operation/leave/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}

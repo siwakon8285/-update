@@ -1,16 +1,24 @@
-POST http://127.0.0.1:8000/api/brawlers/register
+@username = menta
+
+### register
+POST {{base_url}}/brawlers/register
 Content-Type: application/json
 
 {
-  "username": "testuser",
-  "password": "TestPassword123!"
+    "username": "{{username}}",
+    "password": "P@ssw0rd"
 }
 
-###login
-POST http://127.0.0.1:8000/api/authentication/login
+
+### login
+# @name login
+POST {{base_url}}/authentication/login
 Content-Type: application/json
 
 {
-  "username": "testuser",
-  "password": "TestPassword123!"
+    "username": "{{username}}",
+    "password": "P@ssw0rd"
 }
+
+### Get access token from login response
+@access_token = {{login.response.body.access_token}}

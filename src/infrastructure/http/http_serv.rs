@@ -1,13 +1,13 @@
-use std::{net::SocketAddr, sync::Arc, time::Duration};
-
 use anyhow::{Ok, Result};
+use axum::http::StatusCode;
 use axum::{
     Router,
     http::{
-        Method, StatusCode,
+        Method,
         header::{AUTHORIZATION, CONTENT_TYPE},
     },
 };
+use std::{net::SocketAddr, sync::Arc, time::Duration};
 use tokio::net::TcpListener;
 use tower_http::{
     cors::{Any, CorsLayer},
@@ -33,10 +33,18 @@ fn static_serve() -> Router {
 
 fn api_serve(db_pool: Arc<PgPoolSquad>) -> Router {
     Router::new()
-        .nest("/brawers", routers::brawlers::routes(Arc::clone(&db_pool)))
+        .nest("/brawlers", routers::brawlers::routes(Arc::clone(&db_pool)))
         .nest(
             "/authentication",
             routers::authentication::routes(Arc::clone(&db_pool)),
+        )
+        .nest(
+            "/mission-management",
+            routers::mission_management::routes(Arc::clone(&db_pool)),
+        )
+        .nest(
+            "/crew-operation",
+            routers::crew_operation::routes(Arc::clone(&db_pool)),
         )
         .fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }

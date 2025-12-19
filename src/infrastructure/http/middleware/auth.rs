@@ -8,13 +8,20 @@ use axum::{
 };
 
 pub async fn authorization(mut req: Request<Body>, next: Next) -> Result<Response, StatusCode> {
-    let header = req
+    let token = req
         .headers()
-        .get(header::COOKIE)
-        .and_then(|cookie_header| cookie_header.to_str().ok())
+        .get(header::AUTHORIZATION)
+        .and_then(|auth_header| auth_header.to_str().ok())
+        .and_then(|auth_value| auth_value.strip_prefix("Bearer "))
+        .map(|token| token.to_string())
+        .or_else(|| {
+            req.headers()
+                .get(header::COOKIE)
+                .and_then(|cookie_header| cookie_header.to_str().ok())
+                .and_then(|cookie_str| get_cookie_value(cookie_str, "token"))
+        })
         .ok_or(StatusCode::UNAUTHORIZED)?;
 
-    let token = get_cookie_value(header, "token").ok_or(StatusCode::UNAUTHORIZED)?;
 
     let secret = get_user_secret().map_err(|_| StatusCode::UNAUTHORIZED)?;
 
@@ -25,7 +32,6 @@ pub async fn authorization(mut req: Request<Body>, next: Next) -> Result<Respons
         .sub
         .parse::<i32>()
         .map_err(|_| StatusCode::UNAUTHORIZED)?;
-
 
     req.extensions_mut().insert(brawler_id);
 

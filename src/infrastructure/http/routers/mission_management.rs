@@ -10,9 +10,7 @@ use axum::{
 };
 
 use crate::{
-    application::use_cases::{
-        brawlers::BrawlersUseCase, mission_management::MissionManagementUseCase,
-    },
+    application::use_cases::mission_management::MissionManagementUseCase,
     domain::{
         repositories::{
             mission_management::MissionManagementRepository,
@@ -24,11 +22,11 @@ use crate::{
         database::{
             postgresql_connection::PgPoolSquad,
             repositories::{
-                brawlers::BrawlerPostgres, mission_management::MissionManagementPostgres,
+                mission_management::MissionManagementPostgres,
                 mission_viewing::MissionViewingPostgres,
             },
         },
-        http::{middleware::auth::authorization, routers::brawlers::register},
+        http::middleware::auth::authorization,
     },
 };
 
@@ -88,8 +86,8 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
 
     Router::new()
         .route("/", post(add))
-        .route("/:mission_id", patch(edit))
-        .route("/:mission_id", delete(remove))
+        .route("/{mission_id}", patch(edit))
+        .route("/{mission_id}", delete(remove))
         .route_layer(middleware::from_fn(authorization))
         .with_state(Arc::new(use_case))
 }

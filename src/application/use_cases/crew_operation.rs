@@ -2,7 +2,6 @@ use crate::domain::{
     entities::crew_memberships::CrewMemberShips,
     repositories::{
         crew_operation::CrewOperationRepository, mission_viewing::MissionViewingRepository,
-        transaction_provider::TransactionProvider,
     },
     value_objects::mission_statuses::MissionStatuses,
 };
@@ -11,32 +10,24 @@ use std::sync::Arc;
 
 const MAX_CREW_PER_MISSION: i64 = 3;
 
-pub struct CrewOperationUseCase<T1, T2, T3>
+pub struct CrewOperationUseCase<T1, T2>
 where
     T1: CrewOperationRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
-    T3: TransactionProvider + Send + Sync,
 {
     crew_operation_repository: Arc<T1>,
     mission_viewing_repository: Arc<T2>,
-    _tx: Arc<T3>,
 }
 
-impl<T1, T2, T3> CrewOperationUseCase<T1, T2, T3>
+impl<T1, T2> CrewOperationUseCase<T1, T2>
 where
     T1: CrewOperationRepository + Send + Sync + 'static,
     T2: MissionViewingRepository + Send + Sync,
-    T3: TransactionProvider + Send + Sync,
 {
-    pub fn new(
-        crew_operation_repository: Arc<T1>,
-        mission_viewing_repository: Arc<T2>,
-        tx: Arc<T3>,
-    ) -> Self {
+    pub fn new(crew_operation_repository: Arc<T1>, mission_viewing_repository: Arc<T2>) -> Self {
         Self {
             crew_operation_repository,
             mission_viewing_repository,
-            _tx: tx,
         }
     }
 
