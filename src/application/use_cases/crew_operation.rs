@@ -39,6 +39,11 @@ where
             .crew_counting(mission_id)
             .await?;
 
+       if mission.chief_id == brawler_id {
+            return Err(anyhow::anyhow!(
+                  "The chief cannot join in his own mission as a crew member"
+            ));
+        }
         let mission_status_condition = mission.status == MissionStatuses::Open.to_string()
             || mission.status == MissionStatuses::Failed.to_string();
         if !mission_status_condition {

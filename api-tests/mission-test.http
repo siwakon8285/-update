@@ -12,7 +12,7 @@ Content-Type: application/json
 }
 
 ### extract token
-# @access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzY2MjAxMzA0LCJpYXQiOjE3NjYxMTQ5MDR9.OiwK47AUltnocBh99KnliORvIjMtk4F92HX11RbAgI8"
+# @access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzY2NzMxNDQ3LCJpYXQiOjE3NjY2NDUwNDd9.1LWoyDBp17PlVAw4uiCfIXnPUZg-IAHIeK0NH5GTwY0"
 
 
 ### create new mission
@@ -43,5 +43,27 @@ Authorization: Bearer {{access_token}}
 ### remove mission
 # @prompt mission_id Mission ID
 DELETE {{base_url}}/mission-management/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+
+
+### set mission to in-progress
+# @prompt mission_id Mission ID to Set In-Progress
+PATCH  {{base_url}}/mission-operation/in-progress/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+
+### set mission to completed
+# @prompt mission_id Mission ID to Set Completed
+PATCH  {{base_url}}/mission-operation/to-completed/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+
+### set mission to failed
+# @prompt mission_id Mission ID to Set Failed
+PATCH  {{base_url}}/mission-operation/to-failed/{{mission_id}}
 Content-Type: application/json
 Authorization: Bearer {{access_token}}

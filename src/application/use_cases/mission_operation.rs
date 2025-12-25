@@ -29,7 +29,7 @@ where
         }
     }
 
-    pub async fn in_progress(&self, mission_id: i32, chief_id: i32) -> Result<()> {
+    pub async fn in_progress(&self, mission_id: i32, chief_id: i32) -> Result<i32> {
         let mission = self.mission_viewing_repository.get_one(mission_id).await?;
 
         let crew_count = self
@@ -50,24 +50,67 @@ where
             ));
         }
 
-        self.mission_operation_repository
-            .in_progress(mission_id, chief_id)
+        let max_crew_per_mission: u32 = std::env::var("MAX_CREW_PER_MISSION")
+            .unwrap_or_else(|_| "5".to_string())
+            .parse()?;
+
+        if crew_count >= max_crew_per_mission {
+            return Err(anyhow::anyhow!("Mission crew is full"));
+        }
+
+        if mission.chief_id != chief_id {
+            return Err(anyhow::anyhow!(
+                "Only the mission chief can start the mission"
+            ));
+        }
+
+        let result = self
+            .mission_operation_repository
+            .to_progress(mission_id, chief_id)
             .await?;
 
-        Ok(())
+        Ok(result)
     }
 
-    pub async fn to_completed(&self, mission_id: i32, chief_id: i32) -> Result<()> {
-        self.mission_operation_repository
+    pub async fn to_completed(&self, mission_id: i32, chief_id: i32) -> Result<i32> {
+        let mission = self.mission_viewing_repository.get_one(mission_id).await?;
+
+        if mission.status != MissionStatuses::InProgress.to_string() {
+            return Err(anyhow::anyhow!(
+                "Mission must be In Progress to complete it"
+            ));
+        }
+
+        if mission.chief_id != chief_id {
+            return Err(anyhow::anyhow!(
+                "Only the mission chief can complete the mission"
+            ));
+        }
+
+        let result = self
+            .mission_operation_repository
             .to_completed(mission_id, chief_id)
             .await?;
-        Ok(())
+        Ok(result)
     }
 
-    pub async fn to_failed(&self, mission_id: i32, chief_id: i32) -> Result<()> {
-        self.mission_operation_repository
+    pub async fn to_failed(&self, mission_id: i32, chief_id: i32) -> Result<i32> {
+        let mission = self.mission_viewing_repository.get_one(mission_id).await?;
+
+        if mission.status != MissionStatuses::InProgress.to_string() {
+            return Err(anyhow::anyhow!("Mission must be In Progress to fail it"));
+        }
+
+        if mission.chief_id != chief_id {
+            return Err(anyhow::anyhow!(
+                "Only the mission chief can fail the mission"
+            ));
+        }
+
+        let result = self
+            .mission_operation_repository
             .to_failed(mission_id, chief_id)
             .await?;
-        Ok(())
+        Ok(result)
     }
 }

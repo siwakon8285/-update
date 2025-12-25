@@ -41,7 +41,7 @@ impl MissionOperationPostgres {
 
 #[async_trait]
 impl MissionOperationRepository for MissionOperationPostgres {
-    async fn in_progress(&self, mission_id: i32, _chief_id: i32) -> Result<i32> {
+    async fn to_progress(&self, mission_id: i32, _chief_id: i32) -> Result<i32> {
         let result = self
             .set_status(mission_id, MissionStatuses::InProgress)
             .await?;

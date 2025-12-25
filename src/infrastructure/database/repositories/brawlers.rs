@@ -10,8 +10,15 @@ use crate::{
     domain::{
         entities::brawlers::{BrawlerEntity, RegisterBrawlerEntity},
         repositories::brawlers::BrawlerRepository,
+        value_objects::{
+            base64_image::Base64Image,
+            uploaded_image::{UploadImageOptions, UploadedImage},
+        },
     },
-    infrastructure::database::{postgresql_connection::PgPoolSquad, schema::brawlers},
+    infrastructure::{
+        cloudinary,
+        database::{postgresql_connection::PgPoolSquad, schema::brawlers},
+    },
 };
 
 pub struct BrawlerPostgres {
@@ -47,12 +54,27 @@ impl BrawlerRepository for BrawlerPostgres {
 
         Ok(result)
     }
+
+    async fn upload_avatar(
+        &self,
+        brawler_id: i32,
+        base64_image: Base64Image,
+        option: UploadImageOptions,
+    ) -> Result<UploadedImage> {
+       
+        let uploaded_image = cloudinary::upload(base64_image, option).await?;
+
+        
+        let mut connection = Arc::clone(&self.db_pool).get()?;
+
+        diesel::update(brawlers::table
+            .filter(brawlers::id.eq(brawler_id)))
+            .set((
+                brawlers::avatar_url.eq(Some(uploaded_image.url.clone())),
+                brawlers::avatar_public_id.eq(Some(uploaded_image.public_id.clone())),
+            ))
+            .execute(&mut connection)?;
+
+        Ok(uploaded_image)
+    }
 }
-
-
-
-
-
-
-
-
