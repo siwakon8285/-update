@@ -1,9 +1,7 @@
 use anyhow::Result;
 use async_trait::async_trait;
-use diesel::{
-    ExpressionMethods, RunQueryDsl, SelectableHelper, insert_into,
-    query_dsl::methods::{FilterDsl, SelectDsl},
-};
+use diesel::insert_into;
+use diesel::prelude::*;
 use std::sync::Arc;
 
 use crate::{
@@ -61,14 +59,11 @@ impl BrawlerRepository for BrawlerPostgres {
         base64_image: Base64Image,
         option: UploadImageOptions,
     ) -> Result<UploadedImage> {
-       
         let uploaded_image = cloudinary::upload(base64_image, option).await?;
 
-        
         let mut connection = Arc::clone(&self.db_pool).get()?;
 
-        diesel::update(brawlers::table
-            .filter(brawlers::id.eq(brawler_id)))
+        diesel::update(brawlers::table.filter(brawlers::id.eq(brawler_id)))
             .set((
                 brawlers::avatar_url.eq(Some(uploaded_image.url.clone())),
                 brawlers::avatar_public_id.eq(Some(uploaded_image.public_id.clone())),
@@ -76,5 +71,19 @@ impl BrawlerRepository for BrawlerPostgres {
             .execute(&mut connection)?;
 
         Ok(uploaded_image)
+    }
+
+    async fn get_brawlers_by_mission_id(&self, mission_id: i32) -> Result<Vec<BrawlerEntity>> {
+        use crate::infrastructure::database::schema::crew_memberships;
+
+        let mut connection = Arc::clone(&self.db_pool).get()?;
+
+        let result = brawlers::table
+            .inner_join(crew_memberships::table)
+            .filter(crew_memberships::mission_id.eq(mission_id))
+            .select(BrawlerEntity::as_select())
+            .load::<BrawlerEntity>(&mut connection)?;
+
+        Ok(result)
     }
 }

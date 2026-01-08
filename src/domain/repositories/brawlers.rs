@@ -18,4 +18,5 @@ pub trait BrawlerRepository {
         base64_image: Base64Image,
         option: UploadImageOptions,
     ) -> Result<UploadedImage>;
+    async fn get_brawlers_by_mission_id(&self, mission_id: i32) -> Result<Vec<BrawlerEntity>>;
 }

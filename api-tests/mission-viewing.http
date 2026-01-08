@@ -1,0 +1,23 @@
+### get mission by id
+# @prompt mission_id Mission ID
+GET  {{base_url}}/mission-viewing/{{mission_id}}
+Content-Type: application/json
+
+
+### get missions with name
+# @prompt name Name to Search
+GET  {{base_url}}/mission-viewing/?name={{name}}
+Content-Type: application/json
+
+
+### get missions with name and status
+# @prompt name Name to Search
+# @prompt status Status to Search
+GET  {{base_url}}/mission-viewing/filter?name={{name}}&status={{status}}
+Content-Type: application/json
+
+
+### get mission crew
+# @prompt mission_id Mission ID
+GET  {{base_url}}/mission-viewing/{{mission_id}}/crew
+Content-Type: application/json

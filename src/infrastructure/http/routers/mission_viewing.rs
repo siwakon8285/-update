@@ -44,13 +44,27 @@ where
     }
 }
 
+pub async fn get_mission_crew<T>(
+    State(use_case): State<Arc<MissionViewingUseCase<T>>>,
+    Path(mission_id): Path<i32>,
+) -> impl IntoResponse
+where
+    T: MissionViewingRepository + Send + Sync + 'static,
+{
+    match use_case.get_mission_crew(mission_id).await {
+        Ok(brawlers) => (StatusCode::OK, Json(brawlers)).into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+    }
+}
+
 pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
     let viewing_repository = MissionViewingPostgres::new(db_pool);
     let use_case = MissionViewingUseCase::new(Arc::new(viewing_repository));
 
     Router::new()
         .route("/", get(get_all))
-        .route("/{mission_id}", get(get_one))
         .route("/filter", get(get_all))
+        .route("/{mission_id}", get(get_one))
+        .route("/{mission_id}/crew", get(get_mission_crew))
         .with_state(Arc::new(use_case))
 }

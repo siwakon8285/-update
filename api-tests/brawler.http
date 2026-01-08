@@ -1,0 +1,35 @@
+### register with menta
+POST  {{base_url}}/brawlers/register
+Content-Type: application/json
+
+{
+    "username": "menta",
+    "password": "P@ssw0rd",
+    "display_name": "mental"
+}
+
+### register with prompt
+# @prompt username User Name
+# @prompt display_name Display Name
+POST  {{base_url}}/brawlers/register
+Content-Type: application/json
+
+{
+    "username": "{{username}}",
+    "password": "P@ssw0rd",
+    "display_name": "{{display_name}}"
+}
+
+### upload avatar
+POST  {{base_url}}/brawlers/avatar
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+    "base64_string":"iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAMAAABrrFhUAAADAFBMVEVHcEz17N/17N///+D27N/27d/17OD/89X27OD27N/17ODy8d/27OD47OD27OD76eP17N/17N/369317d/07OD17N/17OD17OD17OD16t/37t717N/17N//4eH17N/17N/17N/17N/17N/17N/07d/17N/z7eH17OD17OD07N/27eD37N727OD07d/27d/17d/u7t317N/17d/16+D17N+7yNr17N82BiN0YqDkWCU3ByQ4CiY6Cyg/Ey+2wdRMIj24w9a6xthBFTE7Dirj6PA+ECy5xdhDGDROJ0F0YXmwuMu6x9pqU2tKHTb1695GHjrkWSfw5tvItrNXLkSzvNG1v9P06dvsmnf06t1dPljm2dCutcuCYm1yT15QK0blWyiIaHP15tenqr7lZDTt49hFGjahorZuV3B4Zn7maTqVkab04M+Acondz8eqr8N6aYDpelDncEN1Y6Coj5OXlKltSFmcgIeTjqNoT2ekp7txXHTlYC9XNlCqr8ytlJdfQlxkPVBSL0nphV6en8PrlHDf0spUMkxmTGXvu6KmqcnodEmTjrmOhrX049N5VmWenbLz1sOprcB9bYR2ZaKGepHFsq+sssVZOVNfOEuym53p3dOamK2fhIpcM0jnbD6jiY6xudK/q6q2oKKEd47YycLy0r5bO1Xxxq/pflTqi2WttMeCdIrxyrSWeoLsnXycmq/NvLhkSWLvtptiR2Dz28nlXizY4Oq7x9mIf7F5aaX0696PcHtgRF7i1szvspaQi7fxwquRi6GfoLTpgVh/cambmsCDd6yHfJOyus5oQlXazMXs4NZ+XmvtooLqj2qipMaLg7PSwby6paXur5KRdH3yzrnO1+SGe6/Dr63mZjejpbnVxb+LgZfqiGGBdKpTMV2Mg5mQiZ6JfpTDz9++ytyXlL2PiJ7uqIp9b6jtrI6Ph53tpIWYlr5rVI5iR3taO2yNhpy8qKeJf5WNhJuUd3/uqoyLgpjwv6bwwajL1eOdncHsoH9wXJnJ0+LI0uG8ydvni7oOAAAANXRSTlMA+/ADiFVlBrtsnhP0IaUL0sgl4EK07NmRFxz96Qj45K3+zMJfLyqDenc5PTVHcH8OTpZKjUqGezUAAB2uSURBVHja7Fx7UFNXHhaUhygogoorKr6luqhbc345CRQLo/iMQWziKjZifCFViah1J75"
+}
+
+### get brawlers by mission
+# @prompt mission_id Mission ID
+GET {{base_url}}/brawlers/missions/{{mission_id}}/brawlers
+Content-Type: application/json

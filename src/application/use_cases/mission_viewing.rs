@@ -3,7 +3,9 @@ use std::sync::Arc;
 
 use crate::domain::{
     repositories::mission_viewing::MissionViewingRepository,
-    value_objects::{mission_filter::MissionFilter, mission_model::MissionModel},
+    value_objects::{
+        brawler_model::BrawlerModel, mission_filter::MissionFilter, mission_model::MissionModel,
+    },
 };
 
 pub struct MissionViewingUseCase<T>
@@ -52,5 +54,11 @@ where
         }
 
         Ok(result)
+    }
+
+    pub async fn get_mission_crew(&self, mission_id: i32) -> Result<Vec<BrawlerModel>> {
+        self.mission_viewing_repository
+            .get_mission_crew(mission_id)
+            .await
     }
 }
