@@ -35,7 +35,7 @@ where
 
         let brawler_id = self.brawler_repository.register(register_entity).await?;
 
-        let passport = Passport::new(brawler_id)?;
+        let passport = Passport::new(brawler_id, register_model.display_name.clone(), None)?;
 
         Ok(passport)
     }

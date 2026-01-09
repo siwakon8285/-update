@@ -34,7 +34,11 @@ where
             return Err(anyhow::anyhow!("Invalid password!"));
         }
 
-        let passport = Passport::new(brawler_entity.id)?;
+        let passport = Passport::new(
+            brawler_entity.id,
+            brawler_entity.display_name,
+            brawler_entity.avatar_url,
+        )?;
 
         Ok(passport)
     }
