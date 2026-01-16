@@ -6,6 +6,7 @@ use axum::{
         Method,
         header::{AUTHORIZATION, CONTENT_TYPE},
     },
+    routing::get,
 };
 use std::{net::SocketAddr, sync::Arc, time::Duration};
 use tokio::net::TcpListener;
@@ -20,7 +21,10 @@ use tracing::info;
 
 use crate::{
     config::config_model::DotEnvyConfig,
-    infrastructure::{database::postgresql_connection::PgPoolSquad, http::routers},
+    infrastructure::{
+        database::postgresql_connection::PgPoolSquad,
+        http::routers::{self, default_router},
+    },
 };
 
 fn static_serve() -> Router {
@@ -61,8 +65,7 @@ pub async fn start(config: Arc<DotEnvyConfig>, db_pool: Arc<PgPoolSquad>) -> Res
     let app = Router::new()
         .merge(static_serve())
         .nest("/api", api_serve(db_pool))
-        // .fallback(default_router::health_check)
-        // .route("/health_check", get(default_router::health_check)
+        .route("/error/{status_code_u16}", get(default_router::error))
         .layer(TimeoutLayer::with_status_code(
             StatusCode::GATEWAY_TIMEOUT,
             Duration::from_secs(config.server.timeout),
